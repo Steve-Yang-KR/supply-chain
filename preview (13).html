@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>WUR Final Prototype — Apple Quality Digital Twin</title>
+<style>
+:root{--bg:#f4f7f3;--card:#fff;--ink:#163323;--muted:#6c7a71;--green:#2f7d4a;--green2:#8abb78;--line:#dce7dd;--amber:#d79d28;--red:#c85d4e;--blue:#4d88a8}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:Arial,Helvetica,sans-serif;color:var(--ink)}
+header{padding:20px 26px;background:linear-gradient(120deg,#183b27,#2f7d4a);color:#fff}header h1{margin:0;font-size:27px}header p{margin:6px 0 0;opacity:.9}
+main{max-width:1450px;margin:auto;padding:18px}.grid{display:grid;grid-template-columns:320px 1fr;gap:16px}.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:15px;box-shadow:0 3px 12px rgba(20,50,30,.05)}
+h2{font-size:18px;margin:0 0 12px}h3{font-size:14px;margin:14px 0 8px}label{display:block;font-size:12px;color:var(--muted);margin-top:11px}select,input[type=range]{width:100%;margin-top:5px}.value{float:right;color:var(--green);font-weight:bold}
+.btn{width:100%;border:0;border-radius:9px;padding:11px;background:var(--green);color:#fff;font-weight:bold;margin-top:13px;cursor:pointer}.small{font-size:11px;color:var(--muted);line-height:1.45}
+.hero{display:grid;grid-template-columns:1.4fr .9fr;gap:14px}.qualitybox{display:flex;align-items:center;gap:18px}.ring{width:145px;height:145px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--green) 0 82%,#e7eee8 82%)}.ring::before{content:"";width:108px;height:108px;border-radius:50%;background:#fff;position:absolute}.ring span{position:relative;font-size:34px;font-weight:bold;color:var(--green)}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.kpi{border:1px solid var(--line);border-radius:10px;padding:10px;background:#f8fbf8}.kpi b{display:block;font-size:20px;color:var(--green)}.kpi span{font-size:11px;color:var(--muted)}
+.timeline{display:flex;gap:8px;overflow:auto;padding:5px 0}.stage{min-width:122px;border:1px solid var(--line);border-radius:11px;padding:10px;background:#fff;cursor:pointer;position:relative}.stage.active{border-color:var(--green);outline:3px solid rgba(47,125,74,.18)}.stage h4{margin:0 0 5px;font-size:13px}.stage .q{font-size:24px;font-weight:bold;color:var(--green)}.stage .loss{font-size:10px;color:var(--red)}
+.stage::after{content:"→";position:absolute;right:-10px;top:38px;color:var(--green);font-weight:bold}.stage:last-child::after{display:none}
+.two{display:grid;grid-template-columns:1.1fr .9fr;gap:14px}.panel{border:1px solid var(--line);border-radius:11px;padding:12px;background:#fbfdfb}.action{border-left:5px solid var(--green);background:#eef7f0;padding:12px;border-radius:8px;line-height:1.45}.warning{border-left:5px solid var(--amber);background:#fff7e4;padding:11px;border-radius:8px;line-height:1.4}
+table{width:100%;border-collapse:collapse;font-size:12px}th,td{padding:8px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}th{color:var(--muted)}
+.perspectives{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}.persp{border:1px solid var(--line);border-radius:10px;padding:10px;background:#fff}.persp b{font-size:13px}.persp p{font-size:11px;color:var(--muted);line-height:1.4;margin:6px 0}
+.chatwrap{display:grid;grid-template-columns:300px 1fr;gap:12px}.chat{height:260px;overflow:auto;background:#f4f7f3;border:1px solid var(--line);border-radius:10px;padding:10px}.msg{max-width:88%;padding:9px 10px;margin:7px 0;border-radius:10px;font-size:12px;line-height:1.45;white-space:pre-wrap}.user{margin-left:auto;background:#dfeee2}.bot{background:white;border:1px solid var(--line)}.chatrow{display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:8px}.chatrow input{padding:10px;border:1px solid var(--line);border-radius:9px}.send{border:0;border-radius:9px;background:var(--green);color:#fff;padding:0 15px;font-weight:bold}.chips{display:flex;flex-wrap:wrap;gap:6px}.chip{border:1px solid #cfe0d2;border-radius:15px;padding:6px 8px;background:#eef7f0;color:var(--green);font-size:10px;cursor:pointer}
+@media(max-width:1000px){.grid,.hero,.two,.chatwrap{grid-template-columns:1fr}.kpis{grid-template-columns:repeat(2,1fr)}.perspectives{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<header><h1>AI Digital Twin of the Apple Value Chain</h1><p>Final WUR prototype — predict quality, explain quality loss, and recommend the next best action from orchard to consumer</p></header>
+<main><div class="grid">
+<aside class="card">
+<h2>Apple Lot Inputs</h2>
+<label>Cultivar<select id="cultivar"><option>Fuji</option><option>Gala</option><option>Golden Delicious</option><option>Pink Lady</option><option>Jonagold</option></select></label>
+<label>Harvest maturity<select id="maturity"><option value="optimal">Optimal</option><option value="early">Too early</option><option value="late">Too late</option></select></label>
+<label>Field temperature <span class="value" id="tempLabel">22°C</span><input id="temp" type="range" min="10" max="35" value="22"></label>
+<label>Picking care <span class="value" id="careLabel">85%</span><input id="care" type="range" min="40" max="100" value="85"></label>
+<label>Cooling delay <span class="value" id="delayLabel">4 h</span><input id="delay" type="range" min="0" max="24" value="4"></label>
+<label>Storage temperature <span class="value" id="storageLabel">1°C</span><input id="storage" type="range" min="0" max="12" value="1"></label>
+<label>Transport duration <span class="value" id="transportLabel">18 h</span><input id="transport" type="range" min="1" max="120" value="18"></label>
+<label>Cold chain<select id="cold"><option value="yes">Maintained</option><option value="partial">Partially maintained</option><option value="no">Not maintained</option></select></label>
+<label>Retail shelf time <span class="value" id="shelfLabel">3 days</span><input id="shelf" type="range" min="1" max="14" value="3"></label>
+<button class="btn" id="simulate">Run AI Quality Simulation</button>
+<p class="small">The prototype uses transparent rules to demonstrate the AI logic. A production system would learn from WUR experiments, sensors, images, storage records, logistics data and consumer feedback.</p>
+</aside>
+<section>
+<div class="hero">
+<div class="card">
+<h2>Apple Quality Twin — Lot #WUR-APPLE-001</h2>
+<div class="qualitybox"><div class="ring" id="ring"><span id="quality">82</span></div><div><h3 style="margin-top:0">Predicted Consumer Quality</h3><p id="summary">Good eating quality with manageable post-harvest risk.</p><div class="kpis"><div class="kpi"><b id="firmness">7.2</b><span>Firmness kg/cm²</span></div><div class="kpi"><b id="brix">13.8</b><span>Soluble solids °Brix</span></div><div class="kpi"><b id="shelfLife">24 d</b><span>Remaining shelf life</span></div><div class="kpi"><b id="waste">6%</b><span>Predicted waste risk</span></div></div></div></div>
+</div>
+<div class="card"><h2>Best Next Action</h2><div class="action" id="bestAction"></div><h3>Main quality risk</h3><div class="warning" id="mainRisk"></div></div>
+</div>
+
+<div class="card" style="margin-top:14px"><h2>Quality Journey Across the Supply Chain</h2><div class="timeline" id="timeline"></div></div>
+
+<div class="two" style="margin-top:14px">
+<div class="card"><h2>Selected Stage Detail</h2><div class="panel"><h3 id="stageTitle">Production</h3><p id="stageExplain" class="small"></p><table><tr><th>Quality factors</th><td id="stageFactors"></td></tr><tr><th>Actions</th><td id="stageActions"></td></tr><tr><th>AI role</th><td id="stageAI"></td></tr></table></div></div>
+<div class="card"><h2>Is a Cold Chain Needed?</h2><p class="small">For long-distance distribution and storage, apples benefit strongly from refrigerated handling because low temperature slows respiration, moisture loss, softening and decay. Very short local distribution may tolerate simpler handling, but time and temperature must still be controlled.</p><div class="action" id="coldAdvice"></div></div>
+</div>
+
+<div class="card" style="margin-top:14px"><h2>Product Quality from Stakeholder Perspectives</h2><div class="perspectives">
+<div class="persp"><b>Grower</b><p>Yield, colour, size, disease-free fruit, high pack-out and return per hectare.</p></div>
+<div class="persp"><b>Wholesaler</b><p>Uniform lots, predictable storage life, low shrinkage and dependable supply.</p></div>
+<div class="persp"><b>Trader</b><p>Specification compliance, delivery reliability, export fitness and low claims.</p></div>
+<div class="persp"><b>Retailer</b><p>Appearance, shelf life, sell-through, low waste and customer satisfaction.</p></div>
+<div class="persp"><b>Consumer</b><p>Taste, sweetness, crispness, freshness, safety, convenience and value.</p></div>
+</div></div>
+
+<div class="card" style="margin-top:14px"><h2>AI LLM Quality Assistant</h2><div class="chatwrap"><div><label>Perspective<select id="persona"><option value="grower">Grower</option><option value="wholesaler">Wholesaler</option><option value="trader">Trader</option><option value="retailer">Retailer</option><option value="consumer">Consumer</option></select></label><h3>Suggested questions</h3><div class="chips"><button class="chip">What should I do now?</button><button class="chip">Why did quality fall?</button><button class="chip">Can this lot go to export?</button><button class="chip">How long can we store it?</button><button class="chip">How should the consumer handle it?</button></div><p class="small">Built-in domain copilot for the demo. Production version: secure LLM + WUR knowledge base + real-time twin data.</p></div><div><div class="chat" id="chat"><div class="msg bot">Hello. I am the Apple Quality Copilot. I can explain the current lot quality and recommend the next action for each stakeholder.</div></div><div class="chatrow"><input id="question" placeholder="Ask about quality, storage, transport, market destination or consumer handling..."><button class="send" id="send">Ask AI</button></div></div></div></div>
+</section></div></main>
+<script>
+const $=id=>document.getElementById(id);
+const stageDefs=[
+['Production','Cultivar, rootstock, climate, sunlight, irrigation, fertilization, thinning, canopy, pests','Choose suitable cultivar; balance crop load; manage water and nutrients; control disease; monitor colour and maturity','Predict yield, colour, size and disease risk'],
+['Harvest','Season, harvest moment, fruit temperature, maturity, weather, labour','Pick at optimum maturity; avoid wet harvest; train pickers; use padded bins','Recommend harvest date, block order and labour plan'],
+['Grading & Packing','Bruising, defects, size, colour, handling speed, packaging','Use gentle transfer; computer-vision grading; route fruit by quality; protect against pressure damage','Detect defects and match lots to market requirements'],
+['Cooling','Field heat, cooling delay, cooling rate, airflow','Pre-cool rapidly; monitor pulp temperature; avoid condensation','Recommend cooling protocol and predict loss from delay'],
+['Storage','Temperature, humidity, O₂, CO₂, ethylene, duration','Maintain suitable cold/controlled atmosphere; monitor rooms; use FEFO','Predict remaining shelf life and optimize storage conditions'],
+['Transport','Temperature, humidity, vibration, delay, door openings','Use refrigerated transport for long routes; log temperature; reduce shocks and delays','Optimize route and detect cold-chain excursions'],
+['Wholesale','Lot uniformity, inventory age, availability, peak/off-season','Inspect incoming lots; rotate by remaining life; allocate to suitable channels','Rank inventory by quality and destination'],
+['Trader','Specifications, lead time, export rules, market price, claims risk','Match lot to buyer specification; preserve traceability; minimize transit time','Select best market and forecast claims risk'],
+['Retail','Display temperature, shelf time, handling, stock rotation','Use FEFO; avoid heat and bruising; remove damaged fruit; replenish in smaller batches','Predict sell-through, waste and markdown timing'],
+['Consumer','Trip home, refrigerator use, handling, consumption timing','Refrigerate for longer life; avoid bruising; consume ripe fruit first','Give personalized storage and consumption advice']
+];
+let stageScores=[];
+function calc(){
+ const maturity=$('maturity').value,temp=+$('temp').value,care=+$('care').value,delay=+$('delay').value,storage=+$('storage').value,transport=+$('transport').value,cold=$('cold').value,shelf=+$('shelf').value;
+ $('tempLabel').textContent=temp+'°C';$('careLabel').textContent=care+'%';$('delayLabel').textContent=delay+' h';$('storageLabel').textContent=storage+'°C';$('transportLabel').textContent=transport+' h';$('shelfLabel').textContent=shelf+' days';
+ let q=96; if(maturity==='early')q-=12;if(maturity==='late')q-=9;q-=Math.max(0,temp-24)*.6;q-=(100-care)*.18;q-=delay*.55;q-=Math.max(0,storage-3)*1.4;q-=transport*(cold==='yes'?.015:cold==='partial'?.05:.09);q-=shelf*1.15;q=Math.max(35,Math.round(q));
+ const brix=(maturity==='early'?11.5:maturity==='late'?14.4:13.8).toFixed(1);const firm=(8.2-(maturity==='late'?1.1:0)-delay*.025-Math.max(0,storage-3)*.08-shelf*.09).toFixed(1);const life=Math.max(2,Math.round(38-delay*.65-Math.max(0,storage-2)*2.2-transport*(cold==='yes'?.03:.1)-shelf));const waste=Math.min(45,Math.max(3,Math.round((100-q)*.45)));
+ $('quality').textContent=q;$('ring').style.background=`conic-gradient(var(--green) 0 ${q}%,#e7eee8 ${q}%)`;$('firmness').textContent=firm;$('brix').textContent=brix;$('shelfLife').textContent=life+' d';$('waste').textContent=waste+'%';
+ $('summary').textContent=q>=85?'Excellent market and eating-quality potential.':q>=70?'Good eating quality with manageable post-harvest risk.':'Quality is declining; rapid corrective action is required.';
+ let risks=[];if(maturity!=='optimal')risks.push('harvest maturity');if(delay>6)risks.push('cooling delay');if(storage>4)risks.push('storage temperature');if(cold!=='yes'&&transport>12)risks.push('cold-chain continuity');if(care<75)risks.push('handling damage');if(shelf>7)risks.push('retail shelf time');
+ $('mainRisk').textContent=risks.length?`Main risks: ${risks.join(', ')}.`:'No major abnormal risk detected; continue monitoring time and temperature.';
+ $('bestAction').textContent=delay>6?'Move the lot immediately to rapid pre-cooling and shorten the intended storage period.':cold!=='yes'&&transport>12?'Use refrigerated transport with a temperature logger before dispatch.':storage>4?'Reduce storage temperature and verify pulp temperature, humidity and condensation risk.':shelf>7?'Apply FEFO, reduce shelf batch size and consider markdown before quality declines.':'Maintain the cold chain and allocate the lot by predicted remaining shelf life.';
+ $('coldAdvice').textContent=transport>8||life>7?'Yes — refrigerated transport is recommended for this scenario. Maintain a stable low temperature and log excursions.':'A full refrigerated chain may be optional for very short local delivery, but minimize time, heat and direct sunlight.';
+ stageScores=[96,Math.round(96-(maturity==='optimal'?0:10)),Math.round(95-(100-care)*.15),Math.round(94-delay*.5),Math.round(93-Math.max(0,storage-2)*1.3),Math.round(92-transport*(cold==='yes'?.015:cold==='partial'?.05:.09)),Math.round(q+shelf*1.1+6),Math.round(q+shelf*.8+4),Math.round(q+shelf*.45+2),q].map(x=>Math.max(35,Math.min(99,x)));
+ renderTimeline(); showStage(0);
+}
+function renderTimeline(){let h='';stageDefs.forEach((s,i)=>{let loss=i?Math.max(0,stageScores[i-1]-stageScores[i]):0;h+=`<div class="stage ${i===0?'active':''}" data-i="${i}"><h4>${s[0]}</h4><div class="q">${stageScores[i]}</div><div class="loss">${i?'-'+loss+' quality points':'starting quality'}</div></div>`});$('timeline').innerHTML=h;document.querySelectorAll('.stage').forEach(x=>x.onclick=()=>{document.querySelectorAll('.stage').forEach(y=>y.classList.remove('active'));x.classList.add('active');showStage(+x.dataset.i)})}
+function showStage(i){const s=stageDefs[i];$('stageTitle').textContent=s[0]+' — Quality '+stageScores[i]+'/100';$('stageExplain').textContent=`The digital twin estimates quality at this stage and explains which variables caused any loss.`;$('stageFactors').textContent=s[1];$('stageActions').textContent=s[2];$('stageAI').textContent=s[3]}
+function answer(q){const p=$('persona').value;const quality=+$('quality').textContent;let base=`Current predicted consumer quality is ${quality}/100, with ${$('shelfLife').textContent} remaining shelf life and ${$('waste').textContent} waste risk.`;let t=q.toLowerCase(),a='';if(t.includes('now'))a=$('bestAction').textContent;else if(t.includes('why'))a=$('mainRisk').textContent+' Quality changes cumulatively from maturity, temperature, delay, handling and shelf time.';else if(t.includes('export'))a=quality>=80&&$('cold').value==='yes'?'This lot is a plausible export candidate, subject to buyer specifications, residue compliance, firmness, traceability and transport validation.':'Do not prioritize export yet. Improve cold-chain control or route the lot to a shorter local market.';else if(t.includes('store'))a=`Use the predicted ${$('shelfLife').textContent} as a planning estimate, not a guarantee. Confirm with firmness, starch, ethylene and storage-room measurements.`;else if(t.includes('consumer'))a='Keep apples cool, avoid bruising, refrigerate for longer storage, and allow them to warm briefly before eating if preferred.';else a='Maintain time-temperature control, use remaining shelf life for FEFO allocation, and choose the market channel that can consume the lot before quality falls.';return `${base}\n\n${a}\n\nPerspective: ${p}.`}
+function addMsg(t,c){let d=document.createElement('div');d.className='msg '+c;d.textContent=t;$('chat').appendChild(d);$('chat').scrollTop=$('chat').scrollHeight}function ask(t){let q=(t||$('question').value).trim();if(!q)return;addMsg(q,'user');$('question').value='';setTimeout(()=>addMsg(answer(q),'bot'),200)}
+$('simulate').onclick=calc;document.querySelectorAll('input,select').forEach(e=>e.addEventListener('input',calc));$('send').onclick=()=>ask();$('question').onkeydown=e=>{if(e.key==='Enter')ask()};document.querySelectorAll('.chip').forEach(c=>c.onclick=()=>ask(c.textContent));calc();
+</script>
+</body></html>
